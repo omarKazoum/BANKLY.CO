@@ -1,0 +1,35 @@
+services:
+  gateway_db:
+    image: postgres:9
+    ports:
+      - "9999:5432"
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: BanklyGateway
+    volumes:
+      - BanklyGateway:/var/lib/postgresql/data
+  wallet_mongo_db:
+    image: mongo:latest
+    ports:
+      - 9991:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: walletDb
+    volumes:
+      - wallet_mongo_db:/data/db
+  transactions_mongo_db:
+    image: mongo:latest
+    ports:
+      - 9992:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: transactionsDb
+    volumes:
+      - transactions_mongo_db:/data/db
+volumes:
+  BanklyGateway:
+  wallet_mongo_db:
+  transactions_mongo_db:
