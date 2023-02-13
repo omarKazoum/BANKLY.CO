@@ -20,7 +20,7 @@ public class OperationController {
         return ResponseEntity.ok(this.transactionService.createOperation(operation));
     }
     @GetMapping("")
-    public ResponseEntity<Page<OperationDTO>> getOperations(String accountId,
+    public ResponseEntity<Page<OperationDTO>> getOperations(@RequestParam String accountId,
                                                             @RequestParam(value = "page",required = false,defaultValue = "0") int pageIndex,
                                                             @RequestParam(name = "size", required = false,defaultValue = "0") Integer size){
         return ResponseEntity.ok(transactionService.getOperationsForAccount(accountId,pageIndex,size));

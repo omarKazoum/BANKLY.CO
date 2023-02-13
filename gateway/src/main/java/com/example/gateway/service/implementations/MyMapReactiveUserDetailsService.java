@@ -1,5 +1,6 @@
 package com.example.gateway.service.implementations;
 
+import com.example.gateway.configuration.security.JwtUtil;
 import com.example.gateway.dto.AuthDTO;
 import com.example.gateway.entity.Client;
 import com.example.gateway.entity.RoleEnum;
@@ -47,7 +48,9 @@ public class MyMapReactiveUserDetailsService extends MapReactiveUserDetailsServi
         return Mono.just(new org.springframework.security.core.userdetails.User(username,
                 user.getPassword(), Arrays.asList(new SimpleGrantedAuthority("ROLE_"+user.getRole().toString()))));
     }
-
+    public User getUserByEmail(String email){
+        return userRepository.findByEmail(email).get();
+    }
     public AuthDTO register(final AuthDTO userDTO) throws RegisterException {
         if (userRepository.findByEmail(userDTO.getEmail()).isPresent())
             throw new RegisterException("email already in use");
@@ -71,18 +74,12 @@ public class MyMapReactiveUserDetailsService extends MapReactiveUserDetailsServi
     }
     public AuthDTO login(AuthDTO loginDTO) throws AuthenticationCredentialsNotFoundException{
             UsernamePasswordAuthenticationToken token=new UsernamePasswordAuthenticationToken(loginDTO.getEmail(),loginDTO.getPassword());
-            //authManager.authenticate(token);
             final AuthDTO responseDto=new AuthDTO();
             User u=userRepository.findByEmail(loginDTO.getEmail()).get();
-            //responseDto.setFirstName(u.getFirstName());
-            //responseDto.setLastName(u.getLastName());
             responseDto.setRole(u.getRole());
             String jwtToken=jwtUtil.generateToken(loginDTO.getEmail());
             responseDto.setJwtToken(jwtToken);
             return responseDto;
     }
-    @Autowired
-    public void setAuthManager(ReactiveAuthenticationManager authManager) {
-        this.authManager = authManager;
+
     }
-}
